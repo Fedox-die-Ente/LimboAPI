@@ -1,10 +1,5 @@
 package net.elytrium.limboapi.protocol.packets.c2s;
 
-/**
- * @author Florian Ohldag (Fedox)
- * @version 1.0
- * @since 9/16/2025, 5:11 AM
- */
 import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.proxy.connection.MinecraftSessionHandler;
 import com.velocitypowered.proxy.protocol.MinecraftPacket;
