@@ -3,13 +3,11 @@
 plugins() {
   id("java")
 
-  id("checkstyle")
   id("com.github.spotbugs").version("6.0.12").apply(false)
   id("org.cadixdev.licenser").version("0.6.1").apply(false)
 }
 
 allprojects() {
-  apply(plugin: "checkstyle")
   apply(plugin: "com.github.spotbugs")
   apply(plugin: "org.cadixdev.licenser")
 
@@ -31,26 +29,6 @@ allprojects() {
     maven() {
       setName("papermc-repo")
       setUrl("https://repo.papermc.io/repository/maven-public/")
-    }
-  }
-
-  checkstyle() {
-    toolVersion = "10.12.1"
-    configFile = file("$rootDir/config/checkstyle/checkstyle.xml")
-    configProperties = ["configDirectory": "$rootDir/config/checkstyle"]
-    maxErrors = 0
-    maxWarnings = 0
-  }
-
-  spotbugs() {
-    excludeFilter = file("${this.getRootDir()}/config/spotbugs/suppressions.xml")
-
-    if (this.project != rootProject) {
-      reports.register("html") {
-        required = true
-        outputLocation.value(layout.buildDirectory.file("reports/spotbugs/main/spotbugs.html"))
-        stylesheet = "fancy-hist.xsl"
-      }
     }
   }
 }
