@@ -377,8 +377,27 @@ public class LimboSessionHandlerImpl implements MinecraftSessionHandler {
       return;
     }
 
+    // === NEU: Left/Right Click Handling ===
+    try {
+      String clazzName = packet.getClass().getSimpleName();
+      switch (clazzName) {
+        case "ServerboundInteractPacket" -> {
+          // Linksklick / Angreifen / Interact
+          callback.onLeftClick();
+        }
+        case "ServerboundUseItemPacket" -> {
+          // Rechtsklick / Item benutzen
+          callback.onRightClick();
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    // ======================================
+
     this.callback.onGeneric(packet);
   }
+
 
   private void kickTooBigPacket(String type, int length) {
     this.player.getConnection().closeWith(this.plugin.getPackets().getTooBigPacket());

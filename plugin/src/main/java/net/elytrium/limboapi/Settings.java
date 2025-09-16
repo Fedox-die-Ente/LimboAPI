@@ -48,6 +48,9 @@ public class Settings extends YamlConfig {
 
     public boolean CHECK_FOR_UPDATES = true;
 
+    @Comment("The brand name to be displayed in F3")
+    public String BRAND_NAME = "LimboAPI";
+
     public int MAX_CHAT_MESSAGE_LENGTH = 256;
     public int MAX_BRAND_NAME_LENGTH = 64;
     public int MAX_UNKNOWN_PACKET_LENGTH = 2048;
