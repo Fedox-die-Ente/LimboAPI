@@ -504,12 +504,12 @@ public class LimboProtocol {
         createMapping(0x1D, ProtocolVersion.MINECRAFT_1_12_1, false),
         createMapping(0x2A, ProtocolVersion.MINECRAFT_1_14, false),
         createMapping(0x2B, ProtocolVersion.MINECRAFT_1_16, false),
+        createMapping(0x2C, ProtocolVersion.MINECRAFT_1_16_2, false),
         createMapping(0x2C, ProtocolVersion.MINECRAFT_1_17, false),
         createMapping(0x2E, ProtocolVersion.MINECRAFT_1_19, false),
         createMapping(0x2F, ProtocolVersion.MINECRAFT_1_19_1, false),
-        createMapping(0x32, ProtocolVersion.MINECRAFT_1_20_2, false),
-        createMapping(0x2C, ProtocolVersion.MINECRAFT_1_16_2, false),
         createMapping(0x2F, ProtocolVersion.MINECRAFT_1_19_3, false),
+        createMapping(0x32, ProtocolVersion.MINECRAFT_1_20_2, false),
         createMapping(0x36, ProtocolVersion.MINECRAFT_1_20_5, false),
         createMapping(0x3C, ProtocolVersion.MINECRAFT_1_21_6, false)
     );

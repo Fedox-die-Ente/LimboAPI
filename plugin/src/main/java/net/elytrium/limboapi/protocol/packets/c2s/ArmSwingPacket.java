@@ -39,7 +39,7 @@ public class ArmSwingPacket implements MinecraftPacket {
         if (protocolVersion.lessThan(ProtocolVersion.MINECRAFT_1_9)) {
             this.hand = 0; // before 1.9, only main hand exists
         } else {
-            this.hand = buf.readInt(); // main hand = 0, off-hand = 1
+            this.hand = ProtocolUtils.readVarInt(buf); // main hand = 0, off-hand = 1
         }
     }
 

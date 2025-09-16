@@ -17,7 +17,6 @@
 
 package net.elytrium.limboapi.injection.dummy;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelPromise;
@@ -36,7 +35,6 @@ import java.util.concurrent.TimeUnit;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 @SuppressWarnings("ConstantConditions")
-@SuppressFBWarnings(value = "NP_NONNULL_RETURN_VIOLATION", justification = "This is dummy class.")
 public class DummyEventPool implements EventLoop {
 
   @Override
