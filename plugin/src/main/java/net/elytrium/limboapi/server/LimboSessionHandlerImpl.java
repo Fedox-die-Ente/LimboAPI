@@ -59,12 +59,7 @@ import net.elytrium.limboapi.api.LimboSessionHandler;
 import net.elytrium.limboapi.api.player.LimboPlayer;
 import net.elytrium.limboapi.injection.login.confirmation.LoginConfirmHandler;
 import net.elytrium.limboapi.protocol.LimboProtocol;
-import net.elytrium.limboapi.protocol.packets.c2s.MoveOnGroundOnlyPacket;
-import net.elytrium.limboapi.protocol.packets.c2s.MovePacket;
-import net.elytrium.limboapi.protocol.packets.c2s.MovePositionOnlyPacket;
-import net.elytrium.limboapi.protocol.packets.c2s.MoveRotationOnlyPacket;
-import net.elytrium.limboapi.protocol.packets.c2s.PlayerChatSessionPacket;
-import net.elytrium.limboapi.protocol.packets.c2s.TeleportConfirmPacket;
+import net.elytrium.limboapi.protocol.packets.c2s.*;
 
 public class LimboSessionHandlerImpl implements MinecraftSessionHandler {
 
@@ -230,6 +225,14 @@ public class LimboSessionHandlerImpl implements MinecraftSessionHandler {
       this.callback.onMove(packet.getX(), packet.getY(), packet.getZ());
       this.callback.onMove(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch());
       this.callback.onRotate(packet.getYaw(), packet.getPitch());
+    }
+
+    return true;
+  }
+
+  public boolean handle(ArmSwingPacket packet) {
+    if (this.loaded) {
+      this.callback.onArmSwing(packet.getHand());
     }
 
     return true;

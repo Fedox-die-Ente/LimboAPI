@@ -39,12 +39,7 @@ import net.elytrium.commons.utils.reflection.ReflectionException;
 import net.elytrium.limboapi.api.protocol.PacketDirection;
 import net.elytrium.limboapi.api.protocol.packets.PacketMapping;
 import net.elytrium.limboapi.api.utils.OverlayMap;
-import net.elytrium.limboapi.protocol.packets.c2s.MoveOnGroundOnlyPacket;
-import net.elytrium.limboapi.protocol.packets.c2s.MovePacket;
-import net.elytrium.limboapi.protocol.packets.c2s.MovePositionOnlyPacket;
-import net.elytrium.limboapi.protocol.packets.c2s.MoveRotationOnlyPacket;
-import net.elytrium.limboapi.protocol.packets.c2s.PlayerChatSessionPacket;
-import net.elytrium.limboapi.protocol.packets.c2s.TeleportConfirmPacket;
+import net.elytrium.limboapi.protocol.packets.c2s.*;
 import net.elytrium.limboapi.protocol.packets.s2c.ChangeGameStatePacket;
 import net.elytrium.limboapi.protocol.packets.s2c.ChunkDataPacket;
 import net.elytrium.limboapi.protocol.packets.s2c.ChunkUnloadPacket;
@@ -500,6 +495,18 @@ public class LimboProtocol {
         createMapping(0x08, ProtocolVersion.MINECRAFT_1_21_2, false),
         createMapping(0x09, ProtocolVersion.MINECRAFT_1_21_6, false)
     );
+
+    register(LIMBO_STATE_REGISTRY, PacketDirection.SERVERBOUND,
+        ArmSwingPacket.class, ArmSwingPacket::new,
+        createMapping(0x0B, ProtocolVersion.MINECRAFT_1_7_2, false),
+        createMapping(0x0F, ProtocolVersion.MINECRAFT_1_9, false),
+        createMapping(0x10, ProtocolVersion.MINECRAFT_1_13, false),
+        createMapping(0x11, ProtocolVersion.MINECRAFT_1_16, false),
+        createMapping(0x12, ProtocolVersion.MINECRAFT_1_18, false),
+        createMapping(0x13, ProtocolVersion.MINECRAFT_1_20, false),
+        createMapping(0x3C, ProtocolVersion.MINECRAFT_1_21_7, false)
+    );
+
   }
 
   public static StateRegistry createLocalStateRegistry() {

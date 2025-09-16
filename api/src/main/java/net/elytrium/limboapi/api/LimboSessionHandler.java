@@ -43,13 +43,7 @@ public interface LimboSessionHandler {
 
   }
 
-  default void onLeftClick() {
-    // default empty
-  }
-
-  default void onRightClick() {
-    // default empty
-  }
+  default void onArmSwing(int hand) {}
 
   /**
    * @param packet Any velocity built-in packet or any packet registered via {@link Limbo#registerPacket}.
