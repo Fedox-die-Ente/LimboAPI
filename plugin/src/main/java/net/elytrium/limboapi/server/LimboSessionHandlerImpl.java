@@ -377,17 +377,17 @@ public class LimboSessionHandlerImpl implements MinecraftSessionHandler {
       return;
     }
 
-    // === NEU: Left/Right Click Handling ===
     try {
       String clazzName = packet.getClass().getSimpleName();
       switch (clazzName) {
         case "ServerboundInteractPacket" -> {
-          // Linksklick / Angreifen / Interact
-          callback.onLeftClick();
+          this.callback.onLeftClick();
         }
         case "ServerboundUseItemPacket" -> {
-          // Rechtsklick / Item benutzen
-          callback.onRightClick();
+          this.callback.onRightClick();
+        }
+        default -> {
+          // Do nothing
         }
       }
     } catch (Exception e) {
