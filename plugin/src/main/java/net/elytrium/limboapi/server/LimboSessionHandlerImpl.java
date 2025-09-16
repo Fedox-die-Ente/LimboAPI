@@ -345,6 +345,7 @@ public class LimboSessionHandlerImpl implements MinecraftSessionHandler {
 
   @Override
   public void handleGeneric(MinecraftPacket packet) {
+    System.out.println("Received packet: " + packet);
     if (packet instanceof ClientSettingsPacket clientSettings) {
       this.settings = clientSettings;
     } else if (packet instanceof PlayerChatSessionPacket) {
@@ -376,24 +377,6 @@ public class LimboSessionHandlerImpl implements MinecraftSessionHandler {
       this.handleChat("/" + commandPacket.getCommand());
       return;
     }
-
-    try {
-      String clazzName = packet.getClass().getSimpleName();
-      switch (clazzName) {
-        case "ServerboundInteractPacket" -> {
-          this.callback.onLeftClick();
-        }
-        case "ServerboundUseItemPacket" -> {
-          this.callback.onRightClick();
-        }
-        default -> {
-          // Do nothing
-        }
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    // ======================================
 
     this.callback.onGeneric(packet);
   }
