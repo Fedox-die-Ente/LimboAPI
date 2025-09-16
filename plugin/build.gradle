@@ -36,8 +36,6 @@ dependencies() {
   compileOnly("it.unimi.dsi:fastutil-core:$fastutilVersion")
 
   implementation("org.bstats:bstats-velocity:$bstatsVersion")
-
-  compileOnly("com.github.spotbugs:spotbugs-annotations:$spotbugsVersion")
 }
 
 shadowJar() {

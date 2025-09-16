@@ -17,8 +17,6 @@ dependencies() {
   api("net.elytrium.commons:velocity:$elytriumCommonsVersion")
   api("net.elytrium.commons:kyori:$elytriumCommonsVersion")
   api("net.kyori:adventure-nbt:$adventureVersion")
-
-  compileOnly("com.github.spotbugs:spotbugs-annotations:$spotbugsVersion")
 }
 
 license() {

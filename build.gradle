@@ -6,7 +6,6 @@ plugins() {
 }
 
 allprojects() {
-  apply(plugin: "com.github.spotbugs")
   apply(plugin: "org.cadixdev.licenser")
 
   setGroup("net.elytrium.limboapi")
