@@ -51,7 +51,12 @@ public class SimpleBlockEntity implements VirtualBlockEntity {
 
   @Override
   public int getID(BlockEntityVersion version) {
-    return this.versionIDs.get(version);
+    Integer id = this.versionIDs.get(version);
+    if (id == null) {
+      System.err.println("[DEBUG] Missing BlockEntity ID for modernId='" + this.modernId + "' and version='" + version + "'");
+      return -1;
+    }
+    return id;
   }
 
   @Override
