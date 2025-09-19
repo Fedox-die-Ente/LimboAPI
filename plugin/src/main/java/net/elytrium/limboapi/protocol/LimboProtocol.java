@@ -40,18 +40,7 @@ import net.elytrium.limboapi.api.protocol.PacketDirection;
 import net.elytrium.limboapi.api.protocol.packets.PacketMapping;
 import net.elytrium.limboapi.api.utils.OverlayMap;
 import net.elytrium.limboapi.protocol.packets.c2s.*;
-import net.elytrium.limboapi.protocol.packets.s2c.ChangeGameStatePacket;
-import net.elytrium.limboapi.protocol.packets.s2c.ChunkDataPacket;
-import net.elytrium.limboapi.protocol.packets.s2c.ChunkUnloadPacket;
-import net.elytrium.limboapi.protocol.packets.s2c.DefaultSpawnPositionPacket;
-import net.elytrium.limboapi.protocol.packets.s2c.MapDataPacket;
-import net.elytrium.limboapi.protocol.packets.s2c.PlayerAbilitiesPacket;
-import net.elytrium.limboapi.protocol.packets.s2c.PositionRotationPacket;
-import net.elytrium.limboapi.protocol.packets.s2c.SetExperiencePacket;
-import net.elytrium.limboapi.protocol.packets.s2c.SetSlotPacket;
-import net.elytrium.limboapi.protocol.packets.s2c.TimeUpdatePacket;
-import net.elytrium.limboapi.protocol.packets.s2c.UpdateTagsPacket;
-import net.elytrium.limboapi.protocol.packets.s2c.UpdateViewPositionPacket;
+import net.elytrium.limboapi.protocol.packets.s2c.*;
 import net.elytrium.limboapi.utils.OverlayIntObjectMap;
 import net.elytrium.limboapi.utils.OverlayObject2IntMap;
 import sun.misc.Unsafe;
@@ -512,6 +501,30 @@ public class LimboProtocol {
         createMapping(0x32, ProtocolVersion.MINECRAFT_1_20_2, false),
         createMapping(0x36, ProtocolVersion.MINECRAFT_1_20_5, false),
         createMapping(0x3C, ProtocolVersion.MINECRAFT_1_21_6, false)
+    );
+
+    register(
+        LIMBO_STATE_REGISTRY,
+        PacketDirection.CLIENTBOUND,
+        PlaySoundPacket.class,
+        PlaySoundPacket::new,
+        createMapping(0x29, ProtocolVersion.MINECRAFT_1_7_2, true),
+        createMapping(0x19, ProtocolVersion.MINECRAFT_1_9, true),
+        createMapping(0x1a, ProtocolVersion.MINECRAFT_1_13, true),
+        createMapping(0x19, ProtocolVersion.MINECRAFT_1_14, true),
+        createMapping(0x1a, ProtocolVersion.MINECRAFT_1_15, true),
+        createMapping(0x19, ProtocolVersion.MINECRAFT_1_16, true),
+        createMapping(0x18, ProtocolVersion.MINECRAFT_1_16_2, true),
+        createMapping(0x19, ProtocolVersion.MINECRAFT_1_17, true),
+        createMapping(0x16, ProtocolVersion.MINECRAFT_1_19, true),
+        createMapping(0x17, ProtocolVersion.MINECRAFT_1_19_1, true),
+        createMapping(0x5e, ProtocolVersion.MINECRAFT_1_19_3, true),
+        createMapping(0x62, ProtocolVersion.MINECRAFT_1_19_4, true),
+        createMapping(0x64, ProtocolVersion.MINECRAFT_1_20_2, true),
+        createMapping(0x66, ProtocolVersion.MINECRAFT_1_20_3, true),
+        createMapping(0x68, ProtocolVersion.MINECRAFT_1_20_5, true),
+        createMapping(0x6f, ProtocolVersion.MINECRAFT_1_21_2, true),
+        createMapping(0x6e, ProtocolVersion.MINECRAFT_1_21_5, true)
     );
 
   }
