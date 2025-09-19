@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package net.elytrium.limboapi.protocol.packets.s2c;
 
 import com.velocitypowered.api.network.ProtocolVersion;
@@ -22,11 +23,7 @@ import com.velocitypowered.proxy.protocol.MinecraftPacket;
 import com.velocitypowered.proxy.protocol.ProtocolUtils;
 import io.netty.buffer.ByteBuf;
 
-/**
- * @author Florian Ohldag (Fedox)
- * @version 1.0
- * @since 9/19/2025, 6:09 AM
- */
+
 public class PlaySoundPacket implements MinecraftPacket {
 
     private final String soundName;
