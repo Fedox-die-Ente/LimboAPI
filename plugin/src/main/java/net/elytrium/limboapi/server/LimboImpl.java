@@ -139,7 +139,7 @@ public class LimboImpl implements Limbo {
   private static final CompoundBinaryTag DAMAGE_TYPE_1194;
   private static final CompoundBinaryTag DAMAGE_TYPE_120;
 
-  private final Map<Class<? extends LimboSessionHandler>, PreparedPacket> brandMessages = new HashMap<>();
+  private final Map<Class<? extends LimboSessionHandler>, PreparedPacket> brandMessages = new HashMap<>(2);
   private final LimboAPI plugin;
   private final VirtualWorld world;
 
@@ -246,7 +246,8 @@ public class LimboImpl implements Limbo {
     this.createRegistrySyncModern(configPackets, ProtocolVersion.MINECRAFT_1_20_5, ProtocolVersion.MINECRAFT_1_20_5);
     this.createRegistrySyncModern(configPackets, ProtocolVersion.MINECRAFT_1_21, ProtocolVersion.MINECRAFT_1_21);
     this.createRegistrySyncModern(configPackets, ProtocolVersion.MINECRAFT_1_21_2, ProtocolVersion.MINECRAFT_1_21_4);
-    this.createRegistrySyncModern(configPackets, ProtocolVersion.MINECRAFT_1_21_5, ProtocolVersion.MAXIMUM_VERSION);
+    this.createRegistrySyncModern(configPackets, ProtocolVersion.MINECRAFT_1_21_5, ProtocolVersion.MINECRAFT_1_21_9);
+    this.createRegistrySyncModern(configPackets, ProtocolVersion.MINECRAFT_1_21_11, ProtocolVersion.MAXIMUM_VERSION);
     if (this.shouldUpdateTags) {
       configPackets.prepare(this::createTagsUpdate, ProtocolVersion.MINECRAFT_1_20_2);
     }
@@ -805,6 +806,9 @@ public class LimboImpl implements Limbo {
     if (this.safeRejoinPackets != null) {
       packets.add(this.safeRejoinPackets);
     }
+    if (this.postJoinPackets != null) {
+      packets.add(this.postJoinPackets);
+    }
     if (this.respawnPackets != null) {
       packets.add(this.respawnPackets);
     }
@@ -826,6 +830,9 @@ public class LimboImpl implements Limbo {
 
   private void localDispose() {
     this.takeSnapshot().forEach(PreparedPacket::release);
+    this.built = false;
+    this.brandMessages.values().forEach(PreparedPacket::release);
+    this.brandMessages.clear();
   }
 
   // From Velocity.
@@ -861,7 +868,7 @@ public class LimboImpl implements Limbo {
   }
 
   private CompoundBinaryTag createDimensionData(Dimension dimension, ProtocolVersion version) {
-    CompoundBinaryTag details = CompoundBinaryTag.builder()
+    CompoundBinaryTag.Builder details = CompoundBinaryTag.builder()
         .putBoolean("natural", false)
         .putFloat("ambient_light", 0.0F)
         .putBoolean("shrunk", false)
@@ -879,17 +886,49 @@ public class LimboImpl implements Limbo {
         .putInt("min_y", 0)
         .putInt("height", 256)
         .putInt("monster_spawn_block_light_limit", 0)
-        .putInt("monster_spawn_light_level", 0)
-        .build();
+        .putInt("monster_spawn_light_level", 0);
+
+    if (version.compareTo(ProtocolVersion.MINECRAFT_1_21_11) >= 0) {
+      // TODO: use timelines?
+      switch (dimension) {
+        case OVERWORLD -> {
+          details.put("attributes", CompoundBinaryTag.builder()
+              .putString("minecraft:visual/cloud_color", "#ccffffff")
+              .putFloat("minecraft:visual/cloud_height", 192.33f)
+              .putString("minecraft:visual/fog_color", "#c0d8ff")
+              .putString("minecraft:visual/sky_color", "#78a7ff")
+              .build());
+        }
+        case NETHER -> {
+          details.putString("cardinal_light", "nether");
+          details.putString("skybox", "none");
+          details.put("attributes", CompoundBinaryTag.builder()
+              .putFloat("minecraft:gameplay/sky_light_level", 4.0f)
+              .putFloat("minecraft:visual/fog_end_distance", 96.0f)
+              .putFloat("minecraft:visual/fog_start_distance", 10.0f)
+              .putString("minecraft:visual/sky_light_color", "#7a7aff")
+              .build());
+        }
+        case THE_END -> {
+          details.putString("skybox", "end");
+          details.put("attributes", CompoundBinaryTag.builder()
+              .putString("minecraft:visual/fog_color", "#181318")
+              .putString("minecraft:visual/sky_color", "#000000")
+              .putString("minecraft:visual/sky_light_color", "#e580ff")
+              .build());
+        }
+        default -> throw new IllegalStateException("Unknown dimension: " + dimension); // Checkstyle madness
+      }
+    }
 
     if (version.compareTo(ProtocolVersion.MINECRAFT_1_16_2) >= 0) {
       return CompoundBinaryTag.builder()
           .putString("name", dimension.getKey())
           .putInt("id", dimension.getModernID())
-          .put("element", details)
+          .put("element", details.build())
           .build();
     } else {
-      return details.putString("name", dimension.getKey());
+      return details.build().putString("name", dimension.getKey());
     }
   }
 
@@ -1049,6 +1088,16 @@ public class LimboImpl implements Limbo {
 
           registryContainer.put("minecraft:wolf_variant", this.createRegistry("minecraft:wolf_variant",
               Map.of("minecraft:ashen", wolfVariant.build())));
+
+          if (version.compareTo(ProtocolVersion.MINECRAFT_1_21_11) >= 0) {
+            // Zombie nautilus variant
+            CompoundBinaryTag zombieVariant = CompoundBinaryTag.builder()
+                .putString("asset_id", "minecraft:entity/nautilus/zombie_nautilus")
+                .put("spawn_conditions", ListBinaryTag.empty()).build();
+
+            registryContainer.put("minecraft:zombie_nautilus_variant", this.createRegistry("minecraft:zombie_nautilus_variant",
+                Map.of("minecraft:temperate", zombieVariant)));
+          }
         } else {
           CompoundBinaryTag.Builder wolfVariant = CompoundBinaryTag.builder()
               .putString("wild_texture", "minecraft:entity/wolf/wolf_ashen")
@@ -1089,7 +1138,8 @@ public class LimboImpl implements Limbo {
   }
 
   private DefaultSpawnPositionPacket createDefaultSpawnPositionPacket() {
-    return new DefaultSpawnPositionPacket((int) this.world.getSpawnX(), (int) this.world.getSpawnY(), (int) this.world.getSpawnZ(), 0.0F);
+    return new DefaultSpawnPositionPacket(this.world.getDimension().getKey(),
+        (int) this.world.getSpawnX(), (int) this.world.getSpawnY(), (int) this.world.getSpawnZ(), 0.0F, 0.0f);
   }
 
   private TimeUpdatePacket createWorldTicksPacket() {
@@ -1204,14 +1254,13 @@ public class LimboImpl implements Limbo {
     return packets;
   }
 
-  private PreparedPacket getBrandMessage(Class<? extends LimboSessionHandler> handlerClass) {
-    if (this.brandMessages.containsKey(handlerClass)) {
-      return this.brandMessages.get(handlerClass);
-    } else {
-      PreparedPacket preparedPacket = this.plugin.createPreparedPacket().prepare(this::createBrandMessage).build();
-      this.brandMessages.put(handlerClass, preparedPacket);
-      return preparedPacket;
+  private PreparedPacket getBrandMessage(Class<? extends LimboSessionHandler> clazz) {
+    PreparedPacket preparedPacket = this.brandMessages.get(clazz);
+    if (preparedPacket == null) {
+      this.brandMessages.put(clazz, preparedPacket = this.plugin.createPreparedPacket().prepare(this::createBrandMessage).build());
     }
+
+    return preparedPacket;
   }
 
   private PluginMessagePacket createBrandMessage(ProtocolVersion version) {
